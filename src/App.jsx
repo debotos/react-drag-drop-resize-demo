@@ -7,10 +7,13 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Col, Row } from 'antd'
 import GuestTable from './GuestTable'
 
-import tables from './data.json'
+import data from './data.json'
 import GuestList from './GuestList'
+import { useSafeState } from 'ahooks'
 
 function App() {
+	const [tables, setTables] = useSafeState(data)
+
 	return (
 		<>
 			<DndProvider backend={HTML5Backend}>
@@ -21,7 +24,7 @@ function App() {
 					<Col span={18}>
 						<div style={{ height: '100%', width: '100%' }}>
 							{tables.map((table) => {
-								return <GuestTable key={table.id} table={table} />
+								return <GuestTable key={table.id} table={table} setTables={setTables} />
 							})}
 						</div>
 					</Col>

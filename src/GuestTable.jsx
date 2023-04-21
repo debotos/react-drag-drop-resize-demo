@@ -1,13 +1,39 @@
 import React from 'react'
 import { Rnd } from 'react-rnd'
 import { useSetState } from 'ahooks'
-import { Card } from 'antd'
+import { Button, Card } from 'antd'
 
 import TableSeat from './TableSeat'
 import { antdSmallCardHeaderHeight, snapGridSize } from './helpers'
+import { PlusOutlined } from '@ant-design/icons'
 
-function GuestTable({ table }) {
+function GuestTable({ table, setTables }) {
 	const [state, setState] = useSetState({ ...(table.rnd ?? {}) })
+
+	const handleAddSeat = (e) => {
+		e.stopPropagation()
+		setTables((prevTables) => {
+			return prevTables.map((x) => {
+				if (x.id === table.id) {
+					const serial = String(x.seats.length + 1)
+					return {
+						...x,
+						seats: [
+							...x.seats,
+							{
+								id: serial,
+								seat_name: `Seat ${serial}`,
+								guest_name: null,
+								rnd: { width: 115, height: 50, x: 10, y: 10 },
+							},
+						],
+					}
+				}
+				return x
+			})
+		})
+	}
+
 	return (
 		<>
 			<Rnd
@@ -37,6 +63,11 @@ function GuestTable({ table }) {
 					key={table.id}
 					size='small'
 					title={table.name}
+					extra={
+						<Button icon={<PlusOutlined />} onClick={handleAddSeat} size='small'>
+							Add Seat
+						</Button>
+					}
 					style={{ overflowY: 'scroll', height: state.height }}
 					bodyStyle={{ padding: 0, height: state.height - antdSmallCardHeaderHeight }}
 				>
